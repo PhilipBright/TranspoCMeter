@@ -1,12 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
+import { ScrollView, StatusBar } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-
+import NavigationArea from './Components/Navigation/NavigationAera';
+import LogoAnimation from './Components/LogoAnimation'
+import Lottie from 'lottie-react-native';
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    // <ScrollView>
+    <View style={{flex: 1, backgroundColor: '#8CC6F9'}}>
+     
+    {/* <LogoAnimation/>   */}
+    <NavigationArea />
+    
     </View>
+    // </ScrollView>
   );
 }
 
