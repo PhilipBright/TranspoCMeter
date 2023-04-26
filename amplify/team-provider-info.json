@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-transpocmeter-staging-31622-authRole",
+      "UnauthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-staging-31622-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-staging-31622-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-transpocmeter-staging-31622-deployment",
+      "UnauthRoleName": "amplify-transpocmeter-staging-31622-unauthRole",
+      "StackName": "amplify-transpocmeter-staging-31622",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:891821081481:stack/amplify-transpocmeter-staging-31622/1fb16f80-acdf-11ed-9ff0-066deb1dd6c5",
+      "AmplifyAppId": "d1m4vqbkb90s4"
+    },
+    "categories": {
+      "auth": {
+        "TranspoCMeter": {}
+      }
+    }
+  }
+}

@@ -7,9 +7,22 @@ import Home from './Home';
 import Tracking from './Tracking';
 import Setting from './Setting';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { createStackNavigator } from '@react-navigation/stack';
+import MapLocation from './MapLocation';
 
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function TrackingStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Tracking" component={Tracking} />
+      <Stack.Screen name="MapLocation" component={MapLocation} />
+    </Stack.Navigator>
+  );
+}
+
 
 export default function NavigationArea() {
   
@@ -37,7 +50,7 @@ export default function NavigationArea() {
        
         if (route.name === 'Home') {
           iconName = focused ? 'home' : 'home-outline';
-        } else if (route.name === 'Tracking') {
+        } else if (route.name === 'TrackingScreen') {
           iconName = focused ? 'navigate' : 'navigate-outline';
         }
         else if (route.name === 'Setting') {
@@ -53,7 +66,7 @@ export default function NavigationArea() {
     })} 
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Tracking" component={Tracking} />
+      <Tab.Screen name="TrackingScreen" component={TrackingStack} />
       <Tab.Screen name="Setting" component={Setting} />
       
     </Tab.Navigator>
