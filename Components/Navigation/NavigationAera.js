@@ -9,7 +9,7 @@ import Setting from './Setting';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapLocation from './MapLocation';
-
+import Result from './Result';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -19,6 +19,7 @@ function TrackingStack() {
     <Stack.Navigator>
       <Stack.Screen name="Tracking" component={Tracking} />
       <Stack.Screen name="MapLocation" component={MapLocation} />
+      <Stack.Screen name="Result" component={Result} />
     </Stack.Navigator>
   );
 }

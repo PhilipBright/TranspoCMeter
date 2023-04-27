@@ -7,13 +7,14 @@ import MapViewDirections from 'react-native-maps-directions';
 const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
 import { Text } from 'react-native-paper';
 import { Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * 1.5;
 
-const MapLocation = () => {
+const MapLocation = ({route}) => {
   const [distance, setDistance] = useState(0);
   function haversineDistance(coords1, coords2) {
     const earthRadius = 6371; // in kilometers
@@ -31,16 +32,8 @@ const MapLocation = () => {
   }
   
   const [state, setState] = useState({
-    pickCords:{
-      latitude: 16.867923,
-      longitude: 96.128274,
-      
-    },
-    dropCords:{
-      latitude: 16.866783,
-      longitude: 96.116467,
-   
-    }
+    pickCords: route.params.pickCords,
+    dropCords: route.params.dropCords
   });
   
   // output: 1383.76 meters
@@ -48,12 +41,15 @@ const MapLocation = () => {
   useEffect(() => {
     const distance = Math.round(haversineDistance(state.pickCords, state.dropCords));
     setDistance(distance);
-  }, []);
+  }, [state.pickCords, state.dropCords]);
   
 const mapRef = useRef()
 const {pickCords, dropCords} = state
 
-
+const navigation = useNavigation();
+const ResultHandlePress = () => {
+  navigation.navigate('Result');
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -104,8 +100,8 @@ const {pickCords, dropCords} = state
       <Text id='distance' style={{textAlign:'center', fontWeight:'bold', padding:10}} variant="displaySmall" >
       {distance} km
       </Text>
-      <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding:10 }}>
-<Button style={{ width: 170, height: 50, backgroundColor:'#0B82E9' }} mode="contained" onPress={() => console.log('Pressed')}>
+      <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding:20 }}>
+<Button style={{ width: 170, height: 45, backgroundColor:'#0B82E9' }} mode="contained" onPress={ResultHandlePress}>
   <Text style={{textAlign:'center', color:'white',}} variant="titleMedium">Confirm</Text>
 </Button>
 
