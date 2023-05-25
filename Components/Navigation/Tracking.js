@@ -8,7 +8,6 @@ const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { RadioButton } from 'react-native-paper';
 
-
 function Tracking() {
   const navigation = useNavigation();
   const options = [
@@ -59,7 +58,11 @@ const MapHandlePress = () => {
     const destLat = destination.geometry.location.lat;
     const destLng = destination.geometry.location.lng;
     navigation.navigate('MapLocation', {  pickCords: { latitude: startLat, longitude: startLng },
-    dropCords: { latitude: destLat, longitude: destLng } });
+    dropCords: { latitude: destLat, longitude: destLng },
+    type: selectedType });
+  }
+  else {
+    alert('Please enter start location and destination')
   }
 };
   return (
@@ -117,11 +120,6 @@ const MapHandlePress = () => {
         </View>
       ))}
     </View>
-    {/* {selectedType && <Text>{`Selected : ${selectedType}`}</Text>} */}
-
-
-
-    
 
       <View style={{marginBottom:100, display:'flex', alignItems:'center' }}>
       <Button style={{backgroundColor:'#0B82E9', width:'50%', height:55,  display:'flex', justifyContent:'center'}} icon="" mode="contained" onPress={MapHandlePress}>

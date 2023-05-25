@@ -1,29 +1,89 @@
 import 'react-native-gesture-handler';
-
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+// import Login from './Components/Navigation/Login';
+// import Signup from './Components/Navigation/Signup';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Provider as PaperProvider } from 'react-native-paper';
+import SignInForm from './Components/Navigation/Login';
+import SignUpForm from './Components/Navigation/Signup';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from './firebase/firebaseConfig';
+import HomeScreen from './Components/Navigation/Home';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import NavigationArea from './Components/Navigation/NavigationAera';
 
-import {withAuthenticator} from 'aws-amplify-react-native';
-import { Amplify } from 'aws-amplify';
-import awsconfig from './src/aws-exports';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 // philip123
 // Myanmar2023
+const Stack = createStackNavigator();
 
 
-
-
-
-Amplify.configure({...awsconfig, Analytics: {disabled: true}});
  const App = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  useEffect(() => {
+    // Check authentication status when the component mounts
+    checkAuthenticationStatus();
+  }, []);
+
+  const checkAuthenticationStatus = async () => {
+    try {
+      // Retrieve the authentication status from storage
+      const authStatus = await AsyncStorage.getItem('authStatus');
+      if (authStatus === 'authenticated') {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.log('Error retrieving authentication status:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
   return (
     <SafeAreaProvider>
-   
-    <NavigationArea/>
-
+      <NavigationContainer>
+      <Stack.Navigator>
+      {isAuthenticated ? (
+      <Stack.Screen name="NavigationArea" component={NavigationArea} options={{
+          headerLeft: null,
+          headerShown: false  // Hide the back button
+        }} />
+      ) : (
+        <>
+        <Stack.Screen name="Login" component={SignInForm} options={{
+          headerLeft: null,
+          headerShown: false  // Hide the back button
+        }}  />
+        <Stack.Screen name="SignUp" component={SignUpForm} options={{
+          headerLeft: null,
+          headerShown: false  // Hide the back button
+        }} />
+        <Stack.Screen name="NavigationArea" component={NavigationArea} options={{
+          headerLeft: null,
+          headerShown: false  // Hide the back button
+        }} />
+      </>
+      )}
+       
+        {/* Add more screens and their components here */}
+      </Stack.Navigator>
+    </NavigationContainer>
     </SafeAreaProvider>
   );
-}
+};
+ 
 
 const styles = StyleSheet.create({
   container: {
@@ -34,39 +94,6 @@ const styles = StyleSheet.create({
   },
   
 });
-const signUpConfig = {
-  header: "My Customized Sign Up",
-  hideAllDefaults: true,
-  signUpFields: [
-    {
-      label: "Full name",
-      key: "name",
-      required: true,
-      displayOrder: 1,
-      type: "string",
-    },
-    {
-      label: "Email",
-      key: "email",
-      required: true,
-      displayOrder: 2,
-      type: "string",
-    },
-    {
-      label: "Username",
-      key: "preferred_username",
-      required: true,
-      displayOrder: 3,
-      type: "string",
-    },
-    {
-      label: "Password",
-      key: "password",
-      required: true,
-      displayOrder: 4,
-      type: "password",
-    },
-  ],
-};
 
-export default withAuthenticator(App, {signUpConfig});
+
+export default App

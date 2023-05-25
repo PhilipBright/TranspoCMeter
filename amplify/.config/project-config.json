@@ -1,17 +1,17 @@
 {
-  "providers": [
-    "awscloudformation"
-  ],
   "projectName": "TranspoCMeter",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
     "framework": "react-native",
     "config": {
-      "SourceDir": "/Users/philipbright/Desktop/TranspoCMeter/SchProject",
+      "SourceDir": "src",
       "DistributionDir": "/",
       "BuildCommand": "npm run-script build",
       "StartCommand": "npm run-script start"
     }
-  }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
 }

@@ -1,14 +1,118 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView, View, StyleSheet } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'react-native';
 import bulb from '../../assets/bulb.png';
-function Result() {
+import { useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
+import { firebaseConfig } from '../../firebase/firebaseConfig';
+import { increment } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
+
+
+
+
+
+function Result({route}) {
+
+    
+  const [totalCarbonEmission, setTotalCarbonEmission] = useState(0);
     const navigation = useNavigation();
-   const ThanksHandlePress = () => {
-    navigation.navigate('Home');
-    }
+
+   
+    const [state, setState] = useState({
+        distance: route.params.distance,
+    });
+
+    const type = route.params.type;
+    const [carbonEmissions, setCarbonEmissions] = useState(0);
+    
+    useEffect(() => {
+        const calculation = (type) => {
+          let AVERAGE_FUEL_CONSUMPTION, CO2_EMISSION_FACTOR;
+          
+          if (type === 'car') {
+            AVERAGE_FUEL_CONSUMPTION = 7.84;
+            CO2_EMISSION_FACTOR = 10.16;
+          } else if (type === 'motorcycle') {
+            AVERAGE_FUEL_CONSUMPTION = 6.5;
+            CO2_EMISSION_FACTOR = 8.89;
+          } else if (type === 'train') {
+            AVERAGE_FUEL_CONSUMPTION = 3.6;
+            CO2_EMISSION_FACTOR = 2.93;
+          }
+      
+          const orgDistance = state.distance;
+          // Convert the distance to miles
+          const distanceInMiles = orgDistance * 0.621371;
+      
+          // Convert the fuel consumption to gallons per mile
+          const fuelConsumptionInGallons = AVERAGE_FUEL_CONSUMPTION / 2.35214;
+      
+          // Calculate the total fuel consumption in gallons
+          const totalFuelConsumption = distanceInMiles * fuelConsumptionInGallons;
+      
+          // Calculate the carbon emissions in kg CO2
+          const emissions = totalFuelConsumption * CO2_EMISSION_FACTOR;
+      
+          setCarbonEmissions(emissions);
+          setTotalCarbonEmission((prevTotal) => prevTotal + emissions);
+        };
+      
+        calculation(type);
+      }, [type, state.distance]);
+   
+      const ThanksHandlePress = async () => {
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
+      
+        try {
+          // Get the currently authenticated user
+          const user = auth.currentUser;
+      
+          if (user) {
+            const usersCollectionRef = collection(db, 'users');
+            const userDocRef = doc(usersCollectionRef, user.uid);
+      
+            // Create an object to hold the calculation data
+            const calculationData = {};
+      
+            if (type === 'car') {
+              calculationData.car = totalCarbonEmission;
+            } else if (type === 'motorcycle') {
+              calculationData.motorcycle = totalCarbonEmission;
+            } else if (type === 'train') {
+              calculationData.train = totalCarbonEmission;
+            }
+      
+            // Update the current user document with the selected data
+            await updateDoc(userDocRef, calculationData);
+      
+            console.log('Data uploaded successfully!');
+          } else {
+            console.log('No authenticated user found.');
+          }
+        } catch (error) {
+          console.error('Error uploading data:', error);
+        }
+      
+        navigation.navigate('Home', {
+          carbon: carbonEmissions.toFixed(2),
+          type: type,
+          hasCalculated: true,
+        });
+      };
+      
+    
+    
+    
+    
+   
   return (
     <SafeAreaView style={{flex:1, backgroundColor:'#95D8B9'}}>
         {/* result */}
@@ -16,11 +120,12 @@ function Result() {
             <View style={styles.resultContainer}>
             <View style={{display:'flex', alignItems:'center', width:'55%',height:'100%', padding:10, }}>
                 <Text variant='titleLarge' style={{fontWeight:'500', paddingTop:10, color:'#005BA9' }}>Carbon Emission</Text>
-                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}>20g</Text>
+                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}> {carbonEmissions.toFixed(2)} kg</Text>
              </View>
              <View style={{display:'flex', alignItems:'center',  width:'45%',height:'100%', padding:10, }}>
                 <Text variant='titleLarge' style={{fontWeight:'500', paddingTop:10, color:'#005BA9' }}>Distance</Text>
-                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}>1264 km</Text>
+                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}> {state.distance} km </Text>
+               
              </View>
              </View>
         </View>

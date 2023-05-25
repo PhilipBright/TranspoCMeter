@@ -17,7 +17,9 @@ const Stack = createStackNavigator();
 function TrackingStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Tracking" component={Tracking} />
+      <Stack.Screen name="Tracking" component={Tracking} options={{
+          headerLeft: null, // Hide the back button
+        }} />
       <Stack.Screen name="MapLocation" component={MapLocation} />
       <Stack.Screen name="Result" component={Result} />
     </Stack.Navigator>
@@ -29,7 +31,7 @@ export default function NavigationArea() {
   
   return (
     
-    <NavigationContainer>
+    
      
     <Tab.Navigator
     
@@ -72,7 +74,7 @@ export default function NavigationArea() {
       
     </Tab.Navigator>
   
-  </NavigationContainer>
+  
   
   );
 }

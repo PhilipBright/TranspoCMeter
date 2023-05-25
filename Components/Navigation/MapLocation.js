@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import MapView, {Marker}  from 'react-native-maps';
 import { useState, useRef } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
-const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
+const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gci';
 import { Text } from 'react-native-paper';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -45,11 +45,14 @@ const MapLocation = ({route}) => {
   
 const mapRef = useRef()
 const {pickCords, dropCords} = state
-
+const type = route.params.type;
 const navigation = useNavigation();
 const ResultHandlePress = () => {
-  navigation.navigate('Result');
+  navigation.navigate('Result', {distance: distance, type: type},
+  );
 };
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,6 +103,7 @@ const ResultHandlePress = () => {
       <Text id='distance' style={{textAlign:'center', fontWeight:'bold', padding:10}} variant="displaySmall" >
       {distance} km
       </Text>
+      
       <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding:20 }}>
 <Button style={{ width: 170, height: 45, backgroundColor:'#0B82E9' }} mode="contained" onPress={ResultHandlePress}>
   <Text style={{textAlign:'center', color:'white',}} variant="titleMedium">Confirm</Text>

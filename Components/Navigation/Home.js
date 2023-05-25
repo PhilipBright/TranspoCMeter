@@ -1,16 +1,29 @@
 import React from 'react';
 import { SafeAreaView, StatusBar, Image, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Button } from 'react-native-paper';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { firebaseConfig } from '../../firebase/firebaseConfig';
+import { useRoute } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getFirestore, doc, getDoc, collection, query, where } from 'firebase/firestore';
+
 
 const CarbonSource = ({ source, value }) => {
   return (
     <View style={styles.carbonSourceContainer}>
       <Text style={styles.carbonSourceText}>{source}</Text>
-      <Text style={styles.carbonSourceValue}>{value} g</Text>
+      <Text style={styles.carbonSourceValue}>{value} kg</Text>
     </View>
   );
 };
 
-const Profile = ({username}) => {
+
+
+ 
+
+const Profile = ({username, userID}) => {
   return(
     <View style={styles.profileContainer}>
         <Image
@@ -22,7 +35,74 @@ const Profile = ({username}) => {
   );
 }
 
-const Home = () => {
+
+
+const Home = ({route}) => {
+  const [currentEmail, setCurrentEmail] = useState('');
+  const [totalCarbonEmission, setTotalCarbonEmission] = useState(0);
+  const [carCarbon, setCarCarbon] = useState(0);
+  const [motorcycleCarbon, setMotorcycleCarbon] = useState(0);
+  const [trainCarbon, setTrainCarbon] = useState(0);
+  const { carbon, type, hasCalculated } = route.params ?? {};
+  const [username, setUsername] = useState('');
+
+  useEffect( () => {
+    const fetchUsername = async () => {
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const currentUser = auth.currentUser;
+  
+    if (currentUser) {
+      const userId = currentUser.uid;
+      const db = getFirestore(firebaseApp);
+  const usersCollectionRef = collection(db, 'users');
+      const userDocRef = doc(usersCollectionRef, userId);
+  
+      const userDocSnapshot = await getDoc(userDocRef);
+  
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        const currentUsername = userData.username;
+        setUsername(currentUsername);
+      }
+     
+
+    }}
+  // const fetchUsername = async () => {
+  //   const firebaseApp = initializeApp(firebaseConfig);
+  //   const auth = getAuth(firebaseApp);
+  //   const currentUser = auth.currentUser;
+    
+  //   if (currentUser) {
+  //     const username = currentUser.uid; // Get the username from the current user's display name
+  //     setUsername(username);
+  //     setUserID(currentUser.uid); // Update the state variable with the user ID
+  //   }
+  // };
+  
+  fetchUsername();
+  
+  
+  if (hasCalculated===true) {
+    // Update the total carbon emission if the user has calculated
+    setTotalCarbonEmission(prevCarbon => prevCarbon + parseFloat(carbon));
+  } else {
+    // Set all data to 0 if the user hasn't calculated
+    setTotalCarbonEmission(0);
+  }
+  if(type === 'car') {
+    setCarCarbon(prevCarbon => prevCarbon + parseFloat(carbon));
+  }
+  else if (type === 'motorcycle') {
+    setMotorcycleCarbon(prevCarbon => prevCarbon + parseFloat(carbon));
+  }
+  else if (type === 'train') {
+    setTrainCarbon(prevCarbon => prevCarbon + parseFloat(carbon));
+  }
+  }, [hasCalculated, carbon]);
+  
+  // const type = route.params.carbon;
+  
   return (
     <SafeAreaView style={styles.container}>
      <ScrollView>
@@ -40,7 +120,9 @@ const Home = () => {
     {/* profile dashboard container */}
 
     <View style={styles.contentContainer}>
-     <Profile username="Philip Bright"/>
+     {/* <Profile username={currentEmail}/> */}
+     <Profile username={username}  />
+
 
     {/* Tips */}
     <View style={styles.tipContainer}>
@@ -61,12 +143,13 @@ const Home = () => {
         <Text style={styles.carbonSpendingText}>
           Total Carbon Spending
         </Text>
-        <Text style={styles.carbonSpendingValue}>211 g</Text>
+        
+        <Text style={styles.carbonSpendingValue}>{totalCarbonEmission.toFixed(0)} kg</Text>
         </View>
 
-        <CarbonSource source="Car" value={258} />
-        <CarbonSource source="Motorcycle" value={87} />
-        <CarbonSource source="Train" value={858} />
+        <CarbonSource source="Car" value={carCarbon.toFixed(0)} />
+        <CarbonSource source="Motorcycle" value={motorcycleCarbon.toFixed(0)}  />
+        <CarbonSource source="Train" value={trainCarbon.toFixed(0)}  />
       </View>
       </View>
 

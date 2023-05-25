@@ -1,6 +1,6 @@
 {
   "auth": {
-    "TranspoCMeter": {
+    "transpocmeter9f238ed6": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -10,15 +10,15 @@
         ],
         "passwordProtectionSettings": {
           "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 7
+          "passwordPolicyMinLength": 8
         },
         "signupAttributes": [
-          "PREFERRED_USERNAME",
-          "EMAIL",
-          "NAME"
+          "EMAIL"
         ],
         "socialProviders": [],
-        "usernameAttributes": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
         "verificationMechanisms": [
           "EMAIL"
         ]

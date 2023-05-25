@@ -1,19 +1,19 @@
 {
-  "staging": {
+  "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-transpocmeter-staging-31622-authRole",
-      "UnauthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-staging-31622-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-staging-31622-authRole",
-      "Region": "ap-northeast-1",
-      "DeploymentBucketName": "amplify-transpocmeter-staging-31622-deployment",
-      "UnauthRoleName": "amplify-transpocmeter-staging-31622-unauthRole",
-      "StackName": "amplify-transpocmeter-staging-31622",
-      "StackId": "arn:aws:cloudformation:ap-northeast-1:891821081481:stack/amplify-transpocmeter-staging-31622/1fb16f80-acdf-11ed-9ff0-066deb1dd6c5",
-      "AmplifyAppId": "d1m4vqbkb90s4"
+      "AuthRoleName": "amplify-transpocmeter-dev-154006-authRole",
+      "UnauthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-dev-154006-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::891821081481:role/amplify-transpocmeter-dev-154006-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-transpocmeter-dev-154006-deployment",
+      "UnauthRoleName": "amplify-transpocmeter-dev-154006-unauthRole",
+      "StackName": "amplify-transpocmeter-dev-154006",
+      "StackId": "arn:aws:cloudformation:us-east-1:891821081481:stack/amplify-transpocmeter-dev-154006/a13c7590-f492-11ed-a94e-12e45ae14565",
+      "AmplifyAppId": "d2k8k5hqj3hhs0"
     },
     "categories": {
       "auth": {
-        "TranspoCMeter": {}
+        "transpocmeter9f238ed6": {}
       }
     }
   }
