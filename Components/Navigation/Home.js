@@ -79,8 +79,46 @@ const Home = ({route}) => {
   //     setUserID(currentUser.uid); // Update the state variable with the user ID
   //   }
   // };
+  const fetchUserCalculation = async () => {
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const currentUser = auth.currentUser;
   
+    if (currentUser) {
+      const userId = currentUser.uid;
+      const db = getFirestore(firebaseApp);
+      const userDocRef = doc(db, 'users', userId);
+  
+      const userDocSnapshot = await getDoc(userDocRef);
+  
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+  
+        // Sum the existing data in Firestore
+        let totalCarbonEmission = 0;
+        if (userData.car) {
+          totalCarbonEmission += parseFloat(userData.car);
+          setCarCarbon(parseFloat(userData.car));
+        }
+        if (userData.motorcycle) {
+          totalCarbonEmission += parseFloat(userData.motorcycle);
+          setMotorcycleCarbon(parseFloat(userData.motorcycle));
+        }
+        if (userData.train) {
+          totalCarbonEmission += parseFloat(userData.train);
+          setTrainCarbon(parseFloat(userData.train));
+        }
+  
+        setTotalCarbonEmission(totalCarbonEmission);
+      }
+    }
+  };
+  
+
   fetchUsername();
+  fetchUserCalculation();
+
+ 
   
   
   if (hasCalculated===true) {

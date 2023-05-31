@@ -25,5 +25,6 @@ export const firebaseConfig = {
 
 
 
+
 // Create references to the auth and firestore services
 

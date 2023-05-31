@@ -26,6 +26,8 @@ function Result({route}) {
    
     const [state, setState] = useState({
         distance: route.params.distance,
+        startPlace: route.params.start,
+        endPlace: route.params.end
     });
 
     const type = route.params.type;
@@ -79,15 +81,14 @@ function Result({route}) {
             const usersCollectionRef = collection(db, 'users');
             const userDocRef = doc(usersCollectionRef, user.uid);
       
-            // Create an object to hold the calculation data
             const calculationData = {};
       
             if (type === 'car') {
-              calculationData.car = totalCarbonEmission;
+              calculationData.car = increment(totalCarbonEmission);
             } else if (type === 'motorcycle') {
-              calculationData.motorcycle = totalCarbonEmission;
+              calculationData.motorcycle = increment(totalCarbonEmission);
             } else if (type === 'train') {
-              calculationData.train = totalCarbonEmission;
+              calculationData.train = increment(totalCarbonEmission);
             }
       
             // Update the current user document with the selected data
@@ -100,6 +101,35 @@ function Result({route}) {
         } catch (error) {
           console.error('Error uploading data:', error);
         }
+        try {
+          // Get the currently authenticated user
+          const user = auth.currentUser;
+      
+          if (user) {
+            const usersCollectionRef = collection(db, 'users');
+            const userDocRef = doc(usersCollectionRef, user.uid);
+      
+            const calculationData = {
+              Start: state.startPlace,
+              End: state.endPlace,
+              type,
+              carbonEmissions: carbonEmissions,
+              distance: state.distance
+            };
+      
+            // Create a subcollection reference for calculations
+            const calculationsCollectionRef = collection(userDocRef, 'calculations');
+      
+            // Add a new document for the current calculation
+            await addDoc(calculationsCollectionRef, calculationData);
+      
+            console.log('Calculation data stored successfully!');
+          } else {
+            console.log('No authenticated user found.');
+          }
+        } catch (error) {
+          console.error('Error storing calculation data:', error);
+        }
       
         navigation.navigate('Home', {
           carbon: carbonEmissions.toFixed(2),
@@ -107,6 +137,7 @@ function Result({route}) {
           hasCalculated: true,
         });
       };
+      
       
     
     
@@ -125,7 +156,7 @@ function Result({route}) {
              <View style={{display:'flex', alignItems:'center',  width:'45%',height:'100%', padding:10, }}>
                 <Text variant='titleLarge' style={{fontWeight:'500', paddingTop:10, color:'#005BA9' }}>Distance</Text>
                 <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}> {state.distance} km </Text>
-               
+                
              </View>
              </View>
         </View>

@@ -12,6 +12,7 @@ web-build/
 
 # macOS
 .DS_Store
+.vscode
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend

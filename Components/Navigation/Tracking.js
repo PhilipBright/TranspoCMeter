@@ -7,6 +7,7 @@ import { Checkbox } from 'react-native-paper';
 const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { RadioButton } from 'react-native-paper';
+import { useEffect } from 'react';
 
 function Tracking() {
   const navigation = useNavigation();
@@ -34,37 +35,55 @@ function Tracking() {
   const handleRadioPress = (value) => {
     setSelectedType(value);
   };
- const [startLocation, setStartLocation] = useState(null);
-const [destination, setDestination] = useState(null);
+  const [startLocation, setStartLocation] = useState(null);
+  const [destination, setDestination] = useState(null);
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
 
-const onPressStartAddress = (data, details) => {
-  // 'details' is provided when fetchDetails = true
-  const lat = details.geometry.location.lat;
-  const lng = details.geometry.location.lng;
-  setStartLocation(details);
-};
-
+  const onPressStartAddress = (data, details) => {
+    // 'details' is provided when fetchDetails = true
+    const lat = details.geometry.location.lat;
+    const lng = details.geometry.location.lng;
+    const startPlaceName = data.description
+    setStart(startPlaceName)
+    setStartLocation(details);
+    console.log(start);
+  };
+  useEffect(() => {
+    console.log(start)
+  },[start])
+  
 const onPressDestinationAddress = (data, details) => {
   // 'details' is provided when fetchDetails = true
   const lat = details.geometry.location.lat;
   const lng = details.geometry.location.lng;
+  const endPlaceName = data.description
+  setEnd(endPlaceName)
   setDestination(details);
+  console.log(end);
 };
-
+useEffect(() => {
+  console.log(end)
+},[end])
 const MapHandlePress = () => {
   if (startLocation && destination) {
     const startLat = startLocation.geometry.location.lat;
     const startLng = startLocation.geometry.location.lng;
     const destLat = destination.geometry.location.lat;
     const destLng = destination.geometry.location.lng;
-    navigation.navigate('MapLocation', {  pickCords: { latitude: startLat, longitude: startLng },
-    dropCords: { latitude: destLat, longitude: destLng },
-    type: selectedType });
-  }
-  else {
-    alert('Please enter start location and destination')
+    navigation.navigate('MapLocation', {
+      pickCords: { latitude: startLat, longitude: startLng },
+      dropCords: { latitude: destLat, longitude: destLng },
+      type: selectedType,
+      start: start,
+      end: end,
+    });
+  } else {
+    alert('Please enter start location and destination');
   }
 };
+
+
   return (
     <SafeAreaView style={{flex:1,backgroundColor:'#95D8B9'}}>
  
@@ -84,6 +103,7 @@ const MapHandlePress = () => {
     key: GOOGLE_API_KEY,
     language: 'en',
   }}
+  
   defaultValue={startLocation ? startLocation.description : ''}
   styles={autocompleteStyles}
 />

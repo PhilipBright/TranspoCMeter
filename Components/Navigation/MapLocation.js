@@ -46,9 +46,11 @@ const MapLocation = ({route}) => {
 const mapRef = useRef()
 const {pickCords, dropCords} = state
 const type = route.params.type;
+const startPlace = route.params.start;
+const endPlace = route.params.end;
 const navigation = useNavigation();
 const ResultHandlePress = () => {
-  navigation.navigate('Result', {distance: distance, type: type},
+  navigation.navigate('Result', {distance: distance, type: type, start: startPlace, end: endPlace},
   );
 };
 
