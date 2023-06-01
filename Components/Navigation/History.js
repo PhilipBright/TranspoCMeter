@@ -5,6 +5,8 @@ import { firebaseConfig } from '../../firebase/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 
 import { getAuth } from 'firebase/auth'; // Assuming you have a custom hook for accessing the authenticated user
+import { Divider } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 function History() {
@@ -46,23 +48,27 @@ function History() {
 
   return (
     <SafeAreaView>
-      <View style={{ width:'100%', backgroundColor:'red'}}>
-      <Text style={{fontSize: 50}}>Calculation List</Text>
+      <ScrollView style={{ width:'100%', height:'100%',backgroundColor:'#95D8B9'}}>
+      <View style={{paddingTop:15 }}>
+     
       {calculations.map((calculation) => (
-        <View key={calculation.id} style={{ paddingBottom:10}}>
-          <Text style={{}}>Start Location: {calculation.Start}</Text>
-          <Text>Destination: {calculation.End}</Text>
-          <Text>Carbon Usage: {calculation.carbonEmissions} kg</Text>
-          <Text>Transportation Type: {calculation.type}</Text>
+        <View key={calculation.id} style={{display:'flex', marginLeft:10, marginRight:10}}>
+          <Text style={{fontSize:18, textAlign:'center', paddingBottom:15, fontWeight: 'bold'}}>{calculation.date}</Text>
+          <Text style={{fontSize:15, paddingBottom:10}}>Start Location: {calculation.Start}</Text>
+          <Text style={{fontSize:15, paddingBottom:10}}>Destination: {calculation.End}</Text>
+          <Text style={{fontSize:15, paddingBottom:10}}>Carbon Usage: {calculation.carbonEmissions} kg</Text>
+          <Text style={{fontSize:15, paddingBottom:10}}>Transportation Type: {calculation.type}</Text>
           {/* Render other properties of the calculation */}
+          <View style={{borderWidth: 0.5,
+        borderColor:'black',
+        margin:10,}}></View>
         </View>
       ))}
       </View>
-     <View style={{ width:'100%', height:'50%', backgroundColor:'blue'}}>
-
-     </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
+
 
 export default History;

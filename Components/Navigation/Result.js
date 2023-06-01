@@ -11,6 +11,7 @@ import { increment } from 'firebase/firestore';
 import { collection, addDoc, doc, updateDoc, } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import axios from 'axios';
 
 
 
@@ -19,7 +20,7 @@ import { getFirestore } from 'firebase/firestore';
 
 function Result({route}) {
 
-    
+  const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
   const [totalCarbonEmission, setTotalCarbonEmission] = useState(0);
     const navigation = useNavigation();
 
@@ -29,45 +30,45 @@ function Result({route}) {
         startPlace: route.params.start,
         endPlace: route.params.end
     });
-
+    ;
+    
     const type = route.params.type;
     const [carbonEmissions, setCarbonEmissions] = useState(0);
     
     useEffect(() => {
-        const calculation = (type) => {
-          let AVERAGE_FUEL_CONSUMPTION, CO2_EMISSION_FACTOR;
-          
-          if (type === 'car') {
-            AVERAGE_FUEL_CONSUMPTION = 7.84;
-            CO2_EMISSION_FACTOR = 10.16;
-          } else if (type === 'motorcycle') {
-            AVERAGE_FUEL_CONSUMPTION = 6.5;
-            CO2_EMISSION_FACTOR = 8.89;
-          } else if (type === 'train') {
-            AVERAGE_FUEL_CONSUMPTION = 3.6;
-            CO2_EMISSION_FACTOR = 2.93;
-          }
-      
-          const orgDistance = state.distance;
-          // Convert the distance to miles
-          const distanceInMiles = orgDistance * 0.621371;
-      
-          // Convert the fuel consumption to gallons per mile
-          const fuelConsumptionInGallons = AVERAGE_FUEL_CONSUMPTION / 2.35214;
-      
-          // Calculate the total fuel consumption in gallons
-          const totalFuelConsumption = distanceInMiles * fuelConsumptionInGallons;
-      
-          // Calculate the carbon emissions in kg CO2
-          const emissions = totalFuelConsumption * CO2_EMISSION_FACTOR;
-      
-          setCarbonEmissions(emissions);
-          setTotalCarbonEmission((prevTotal) => prevTotal + emissions);
-        };
-      
-        calculation(type);
-      }, [type, state.distance]);
-   
+      const calculation = () => {
+        let AVERAGE_FUEL_CONSUMPTION, CO2_EMISSION_FACTOR;
+    
+        if (type === 'car') {
+          AVERAGE_FUEL_CONSUMPTION = 7.84;
+          CO2_EMISSION_FACTOR = 10.16;
+        } else if (type === 'motorcycle') {
+          AVERAGE_FUEL_CONSUMPTION = 6.5;
+          CO2_EMISSION_FACTOR = 8.89;
+        } else if (type === 'train') {
+          AVERAGE_FUEL_CONSUMPTION = 3.6;
+          CO2_EMISSION_FACTOR = 2.93;
+        }
+    
+        const orgDistance = parseFloat(state.distance.replace('mi', ''));
+
+    
+        // Convert the fuel consumption to gallons per mile
+        const fuelConsumptionInGallons = AVERAGE_FUEL_CONSUMPTION / 2.35214;
+    
+        // Calculate the total fuel consumption in gallons
+        const totalFuelConsumption = orgDistance * fuelConsumptionInGallons;
+    
+        // Calculate the carbon emissions in kg CO2
+        const emissions = totalFuelConsumption * CO2_EMISSION_FACTOR;
+    
+        setCarbonEmissions(emissions);
+        setTotalCarbonEmission(prevTotal => prevTotal + emissions);
+      };
+    
+      calculation();
+    }, [type, state.distance]);
+    
       const ThanksHandlePress = async () => {
         const firebaseApp = initializeApp(firebaseConfig);
         const auth = getAuth(firebaseApp);
@@ -108,13 +109,20 @@ function Result({route}) {
           if (user) {
             const usersCollectionRef = collection(db, 'users');
             const userDocRef = doc(usersCollectionRef, user.uid);
-      
+            const currentDate = new Date(); // Create a new Date object with the current date and time
+
+  // Extract the desired information from the Date object
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // Months are zero-based, so add 1
+  const day = currentDate.getDate();
+  const formattedDate = `${day}-${month}-${year}`;
             const calculationData = {
               Start: state.startPlace,
               End: state.endPlace,
               type,
               carbonEmissions: carbonEmissions,
-              distance: state.distance
+              distance: state.distance,
+              date: formattedDate
             };
       
             // Create a subcollection reference for calculations
@@ -155,8 +163,8 @@ function Result({route}) {
              </View>
              <View style={{display:'flex', alignItems:'center',  width:'45%',height:'100%', padding:10, }}>
                 <Text variant='titleLarge' style={{fontWeight:'500', paddingTop:10, color:'#005BA9' }}>Distance</Text>
-                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}> {state.distance} km </Text>
-                
+                <Text variant='titleLarge' style={{fontWeight:'bold', paddingTop:18 }}> {state.distance}les  </Text>
+               
              </View>
              </View>
         </View>

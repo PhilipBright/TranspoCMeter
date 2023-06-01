@@ -4,10 +4,11 @@ import React, { useEffect } from 'react';
 import MapView, {Marker}  from 'react-native-maps';
 import { useState, useRef } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
-const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gci';
+
 import { Text } from 'react-native-paper';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -15,21 +16,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * 1.5;
 
 const MapLocation = ({route}) => {
-  const [distance, setDistance] = useState(0);
-  function haversineDistance(coords1, coords2) {
-    const earthRadius = 6371; // in kilometers
-    const latDiff = (coords2.latitude - coords1.latitude) * Math.PI / 180;
-    const lonDiff = (coords2.longitude - coords1.longitude) * Math.PI / 180;
-    const lat1 = coords1.latitude * Math.PI / 180;
-    const lat2 = coords2.latitude * Math.PI / 180;
-  
-    const a = Math.sin(latDiff / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(lonDiff / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  
-    const distance = earthRadius * c; // in kilometers
-  
-    return distance * 1000; // convert to meters
-  }
+  const GOOGLE_API_KEY = 'AIzaSyBgW215Zkb9oFkJuQa4VVK53O7Jlppq4gc';
   
   const [state, setState] = useState({
     pickCords: route.params.pickCords,
@@ -37,12 +24,27 @@ const MapLocation = ({route}) => {
   });
   
   // output: 1383.76 meters
-
+  const [distance, setDistance] = useState('');
   useEffect(() => {
-    const distance = Math.round(haversineDistance(state.pickCords, state.dropCords));
-    setDistance(distance);
-  }, [state.pickCords, state.dropCords]);
+    const fetchDistance = async (startLocation, endLocation) => {
+      try {
+        const response = await axios.get(
+          `https://maps.googleapis.com/maps/api/directions/json?origin=${startLocation}&destination=${endLocation}&key=${GOOGLE_API_KEY}`
+        );
   
+        const distance = response.data.routes[0].legs[0].distance.text;
+        console.log('Distance:', distance);
+        setDistance(distance);
+      } catch (error) {
+        console.error('Error fetching distance:', error);
+        return null;
+      }
+    };
+  
+    fetchDistance(startPlace, endPlace);
+  }, [startPlace, endPlace]);
+  
+   
 const mapRef = useRef()
 const {pickCords, dropCords} = state
 const type = route.params.type;
@@ -103,7 +105,7 @@ const ResultHandlePress = () => {
       <View style={{position:'absolute' , bottom:0, width:'100%', backgroundColor:'#ffffff'}}>
     <Text style={{textAlign:'center', fontWeight:'bold', padding:10}} variant="titleMedium" >Distance</Text>
       <Text id='distance' style={{textAlign:'center', fontWeight:'bold', padding:10}} variant="displaySmall" >
-      {distance} km
+      {distance}les
       </Text>
       
       <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding:20 }}>

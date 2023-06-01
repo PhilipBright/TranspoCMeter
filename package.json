@@ -19,6 +19,7 @@
     "@shoutem/ui": "^6.1.2",
     "@ui-kitten/components": "^5.3.0",
     "amazon-cognito-identity-js": "^6.1.2",
+    "axios": "^1.4.0",
     "constants": "^0.0.2",
     "dimensions": "^0.1.0",
     "expo": "~47.0.12",
