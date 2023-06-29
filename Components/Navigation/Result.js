@@ -47,6 +47,7 @@ function Result({route}) {
           CO2_EMISSION_FACTOR = 8.89;
         } else if (type === 'train') {
           AVERAGE_FUEL_CONSUMPTION = 3.6;
+          
           CO2_EMISSION_FACTOR = 2.93;
         }
     
@@ -176,7 +177,9 @@ function Result({route}) {
                <Image source={bulb} style={{width:25, height:25}}></Image>
                </View>
                <View>
-                <Text style={{padding:15,  textAlign:'justify'}} variant='bodyLarge'>In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.</Text>
+                <Text style={{padding:15,  textAlign:'justify'}} variant='bodyLarge'>
+                Hello there, you can reduce carbon emissions in transportation by consolidating trips, offsetting emissions, and promoting eco-driving habits, you can contribute to a greener transportation system. Stay informed about sustainable policies and make conscious choices to minimize your carbon footprint in transportation
+                </Text>
             </View>
             </View>
         </View>
