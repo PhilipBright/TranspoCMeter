@@ -90,6 +90,7 @@ export default function Signup() {
     />
     <TextInput
     label="Enter your Password"
+    secureTextEntry
     value={password}
     onChangeText={setPassword}
     mode="outlined"

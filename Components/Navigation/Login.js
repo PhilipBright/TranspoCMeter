@@ -66,6 +66,7 @@
     />
     <TextInput
             label="Enter your Password"
+            secureTextEntry
             value={password}
             onChangeText={setPassword}
             mode="outlined"
