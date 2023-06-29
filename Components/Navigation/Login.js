@@ -65,7 +65,7 @@
     style={{ marginBottom: 10 }}
     />
     <TextInput
-            label="Enter your Password"
+            label="Enter your Password" 
             secureTextEntry
             value={password}
             onChangeText={setPassword}
